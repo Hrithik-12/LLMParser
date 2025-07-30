@@ -39,13 +39,13 @@ class GeminiLLMProcessor:
         # Configure Gemini
         genai.configure(api_key=self.api_key)
         
-        # Model configuration
-        self.model_name = "gemini-1.5-flash"
+        # Model configuration for faster responses
+        self.model_name = "gemini-1.5-flash"  # Fast model
         self.generation_config = {
             "temperature": 0.1,
-            "top_p": 0.95,
-            "top_k": 40,
-            "max_output_tokens": 800,
+            "top_p": 0.8,  # Reduced for faster generation
+            "top_k": 20,   # Reduced for speed
+            "max_output_tokens": 500,  # Reduced for faster responses
         }
         
         # Rate limiting for free tier
@@ -147,18 +147,23 @@ COVERAGE DECISIONS:
             return self._create_fallback_response(query, str(e))
     
     def _prepare_context(self, relevant_chunks: List[Dict]) -> str:
-        """Prepare document context for the LLM"""
+        """Prepare document context for the LLM - optimized for speed"""
         if not relevant_chunks:
             return "No relevant document sections found."
         
-        context_parts = []
-        for i, chunk in enumerate(relevant_chunks[:3], 1):  # Limit to top 3 chunks
-            similarity_score = chunk.get('similarity_score', 0)
-            text = chunk.get('text', '').strip()
-            
-            context_parts.append(f"Section {i} (relevance: {similarity_score:.2f}):\n{text}\n")
+        # Take only top 2 chunks for faster processing
+        top_chunks = relevant_chunks[:2]
         
-        return "\n".join(context_parts)
+        context_parts = []
+        for i, chunk in enumerate(top_chunks):
+            text = chunk.get('text', '').strip()
+            if text:
+                # Truncate very long chunks for speed
+                if len(text) > 1000:
+                    text = text[:1000] + "..."
+                context_parts.append(f"Section {i+1}: {text}")
+        
+        return "\n\n".join(context_parts)
     
     def _create_user_prompt(self, query: str, context: str) -> str:
         """Create the user prompt combining query and context"""

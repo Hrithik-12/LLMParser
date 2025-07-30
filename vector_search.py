@@ -10,7 +10,7 @@ import os
 
 class VectorSearchEngine:
     """
-    Real vector search engine using FAISS and sentence transformers
+    Real vector search engine        return self.vector_engine.search(query, top_k=2)  # Reduced from 3 to 2 for speedusing FAISS and sentence transformers
     
     WHY WE USE VECTOR SEARCH:
     - Semantic understanding: "knee surgery" matches "orthopedic procedure"

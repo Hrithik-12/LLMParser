@@ -1,10 +1,15 @@
 import requests
 import json
 import time
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def test_complete_system():
     base_url = "http://localhost:8000"
-    token = "1946e5edb566278a8419b7529c46cd12f704f8d440a584ebd07201ec32fcbfd0"
+    # Use environment variable for the token instead of hardcoding
+    token = os.getenv('API_TOKEN', "1946e5edb566278a8419b7529c46cd12f704f8d440a584ebd07201ec32fcbfd0")
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
@@ -28,18 +33,23 @@ def test_complete_system():
         print(f"   System Ready: {status['system_ready']}")
         print(f"   Documents Processed: {status['stats']['documents_processed']}")
     
-    # 3. Main Test with Real Document
-    print("\n3️⃣ Processing Real Document with Questions...")
+    # 3. Main Test with Real Insurance Policy Document
+    print("\n3️⃣ Processing Real Insurance Policy with Questions...")
     
-    # Using a publicly accessible PDF with substantial content for testing
+    # Using the actual insurance policy document with real questions
     test_data = {
-        "documents": "https://www.adobe.com/support/products/enterprise/knowledgecenter/media/c4611_sample_explain.pdf",
+        "documents": "https://hackrx.blob.core.windows.net/assets/policy.pdf?sv=2023-01-03&st=2025-07-04T09%3A11%3A24Z&se=2027-07-05T09%3A11%3A00Z&sr=b&sp=r&sig=N4a9OU0w0QXO6AOIBiu4bpl7AXvEZogeT%2FjUHNO7HzQ%3D",
         "questions": [
-            "What is this document about?",
-            "What are the main topics covered?",
-            "Can you summarize the key points?",
-            "What information is provided?",
-            "What is the purpose of this document?"
+            "What is the grace period for premium payment under the National Parivar Mediclaim Plus Policy?",
+            "What is the waiting period for pre-existing diseases (PED) to be covered?",
+            "Does this policy cover maternity expenses, and what are the conditions?",
+            "What is the waiting period for cataract surgery?",
+            "Are the medical expenses for an organ donor covered under this policy?",
+            "What is the No Claim Discount (NCD) offered in this policy?",
+            "Is there a benefit for preventive health check-ups?",
+            "How does the policy define a 'Hospital'?",
+            "What is the extent of coverage for AYUSH treatments?",
+            "Are there any sub-limits on room rent and ICU charges for Plan A?"
         ]
     }
     

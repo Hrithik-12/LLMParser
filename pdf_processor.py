@@ -191,7 +191,7 @@ class RealDocumentProcessor:
         # Trim and return
         return text.strip()
     
-    def create_document_chunks(self, text: str, chunk_size: int = 1000, overlap: int = 200) -> List[Dict]:
+    def create_document_chunks(self, text: str, chunk_size: int = 500, overlap: int = 100) -> List[Dict]:
         """
         Split document into chunks for better retrieval
         
